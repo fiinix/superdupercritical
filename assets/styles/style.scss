@@ -1,0 +1,436 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+/**
+* The site’s main page-head can have two different states:
+*
+* 1) Regular page-head with no backgrounds or extra treatments; it just
+*    contains the logo and nav.
+* 2) A masthead that has a fluid-height (becoming fixed after a certain point)
+*    which has a large background image, and some supporting text.
+*
+* The regular page-head is incredibly simple, but the masthead version has some
+* slightly intermingled dependency with the wrapper that lives inside it.
+*/
+@charset "utf-8";
+
+
+
+/*------------------------------------*\
+    #Variables
+\*------------------------------------*/
+$breakpoint-lap:			800;
+
+$serenity:					#92a8d1;
+$rose-quartz:				#f7cac9;
+$lint:						#b6ba99;
+$orchid-haze:				#b0879b;
+$fig:						#532d3b;
+$thyme:						#50574c;
+$volcanic-glass:			#615c60;
+$silver-gray:				#c1b7b0;
+
+$bronze:					#d29b6c;
+
+$linen:						#fefbfb;
+$thunder:					#3a3639;
+
+$goldenrod:					#ffd700;
+$picton-blue:				#55acee;
+
+$bg-color:					$linen;
+$copy-color:				$thunder;
+$link-color:				$fig;
+
+$primary-color:				$serenity;
+$secondary-color:			$rose-quartz;
+$tertiary-color:			$volcanic-glass;
+
+$mark-color:				$goldenrod;
+$twitter-color:				$picton-blue;
+
+$font-size:					18;
+$font-leading:				25.452;
+$font-family:				"Georgia", "Times", "Times New Roman", serif;
+
+$heading-family:			"Fira Sans", sans-serif;
+$heading-weight:			700;
+
+
+
+/*------------------------------------*\
+    #Functions
+\*------------------------------------*/
+@function em($target, $context: $font-size) {
+
+	@return $target/$context +em
+
+}
+
+
+
+@function unitless($target, $context: $font-size) {
+
+	@return $target/$context
+
+}
+
+
+
+@mixin mq($point, $IE9: false, $query1: min, $query2: width) {
+	@if $IE9 == true{
+		.lt-ie9 & {
+			@content;
+		}
+		@media screen and (#{$query1}-#{$query2}: em($point)) {
+			@content;
+		}
+	}
+	@else {
+		@media screen and (#{$query1}-#{$query2}: em($point)) {
+			@content;
+		}
+	}
+}
+
+:root {
+	--main-text-color: #3A3639;
+	--main-bg-color: #FEFBFB;
+
+	--main-color-silver-gray: #c1b7b0;
+	--main-color-serenity: #92a8d1;
+	--main-color-rose-quartz: #f7cac9;
+	--main-color-lint: #b6ba99;
+	--main-color-orchid-haze: #b0879b;
+	--main-color-fig: #532d3b;
+	--main-color-thyme: #50574c;
+	--main-color-volcanic-glass: #615c60;
+	--main-color-twitter: #55acee;
+}
+
+*:before,*:after {
+	box-sizing: inherit;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+}
+
+* + * {
+	margin-top: 1em;
+}
+
+html {
+	position: relative;
+	box-sizing: border-box;
+
+	overflow-x: hidden;
+	scroll-behavior: smooth;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+}
+
+html:before {
+
+	content: " ";
+	display: block;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 72.21vw;
+	height: 9px;
+	background-color: blue;
+
+}
+
+html:after {
+	pointer-events: none;
+	//content: " ";
+	display: block;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-image: linear-gradient(90deg, transparent 0%, transparent 50%, rgba(128, 128, 128, 0.05) 50%, rgba(128, 128, 128, 0.05) 100%), linear-gradient(0deg, transparent 0%, transparent 50%, rgba(128, 128, 128, 0.025) 50%, rgba(128, 128, 128, 0.025) 100%);
+	background-size: 11.1111vw 11.1111vh, 11.1111vw 11.1111vh;
+}
+
+body {
+	font-size: calc(16px + (20 - 16) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.4;
+	font-family: Georgia, Times, "Times New Roman", serif;
+	background: var(--main-bg-color);
+	color: var(--main-text-color);
+}
+
+.lead, blockquote {
+	font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.2;
+}
+
+h1, .alpha {
+	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 500;
+	font-size: calc(25.632px + (81.008 - 25.632) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.05;
+}
+
+h2, .beta {
+	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 500;
+	font-size: calc(22.784px + (54 - 22.784) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.1;
+}
+
+.article__content h2,
+h3, .gamma {
+	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 500;
+	font-size: calc(20.256px + (36 - 20.256) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.15;
+}
+
+.article__content h3,
+h4, .delta {
+	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 500;
+	font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.2;
+}
+
+.wrapper {
+	max-width: 75vw;
+	margin: 11.11vh 22.22vw 22.22vh 11.11vw;
+	/*margin-left: auto;*/
+	/*margin-right: auto;*/
+	display: flex;
+	justify-content: flex-end;
+}
+
+* + .main {
+	margin-top: 3em;
+}
+
+.first {
+	margin-top: 3em;
+}
+
+.last {
+	margin-bottom: 3em;
+}
+
+a {
+	color: blue;
+
+	&:visited {
+		color: purple;
+	}
+	&:hover {
+		color: lighten(blue, 15);
+	}
+	&:active {
+		background-color: gold;
+	}
+
+}
+
+
+nav {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: flex-start;
+}
+nav a {
+	display: inline-block;
+	//font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (1200 - 320)));
+	font-size: calc(16px + (20 - 16) * ((100vw - 320px) / (1200 - 320)));
+	margin-top: 0.5em;
+
+	&:first-child {
+		margin-bottom: 3em;
+	}
+}
+
+a[href*="http"]:after {
+	content: "\2B08";
+	display: inline-block;
+	margin-left: 0.125em;
+	position: relative;
+	top: -0.1em;
+}
+
+.primary {
+	flex: 1 1 auto;
+	max-width: 49.99vw;
+	margin-left: 1.5em;
+	margin-top: 0;
+}
+
+.secondary {
+	position: sticky;
+	top: 11.11vh;
+	flex: 1 1 auto;
+	align-self: flex-start;
+}
+
+picture {
+	display: block;
+	overflow: hidden;
+}
+
+figure {
+	margin: 0;
+	width: 100%;
+}
+
+figcaption {
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 75vw;
+	font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (1200 - 320)));
+}
+
+
+
+
+.field-group {
+	max-width: 32em;
+}
+.field-label {
+	display: block;
+}
+input {
+
+	padding: 0.75em 1.5em;
+	background: white;
+	border: 2px solid var(--main-text-color);
+
+}
+input,
+button {
+
+	font-family: inherit;
+	font-size: 100%;
+	line-height: 1.15;
+	margin-left: 0;
+	margin-right: 0;
+
+}
+
+@keyframes dash {
+
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+button {
+	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 500;
+	font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.2;
+	padding: 0.6em 1.8em 0.6em 1.2em;
+	background-color: blue;
+	color: white;
+	border: 2px solid transparent;
+	//transform: skew(27deg);
+	//
+	clip-path: polygon(calc(100% - 31px) 0, 100% 100%, 0% 100%, 0% 0%);
+	//letter-spacing: 0.01em; // white-on-dark has less affordance
+
+	position: relative;
+	top: (2+3) + 0px; // input border + offset
+	left: -(2+3) + 0px; // input border + offset
+
+	transition: all 300ms linear 0ms;
+
+	&:before {
+
+		//content: " ";
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 0;
+		padding-right: 100%;
+		background-color: red;
+		transform: skew(27deg);
+
+	}
+
+	&:hover,
+	&:focus {
+
+		background-color: lighten(blue, 15);
+
+	}
+
+	&.error {
+
+		background-color: #FF4136;
+		color: var(--main-text-color);
+
+	}
+
+	&.success {
+		background-color: #2ECC40;
+		color: var(--main-text-color);
+	}
+
+	&.busy .icon {
+		stroke-dasharray: 60;
+		stroke-dashoffset: 120;
+		animation: dash 1s linear infinite;
+	}
+}
+
+.field-group--abreasted {
+	width: 100%;
+	display: flex;
+	flex-flow: row nowrap;
+}
+.field-group--abreasted input {
+	margin-top: 0;
+	width: 100%;
+	flex: 1 0 0%;
+}
+.field-group--abreasted .field-group {
+	margin-top: 0;
+	flex: 0 1 auto;
+}
+
+.post-list {
+
+	padding-left: 0;
+	list-style: none;
+
+	li + li {
+		margin-top: 3em;
+	}
+
+}
+
+
+* + .email {
+	margin-top: 3em;
+}
+
+
+.visuallyhidden {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	white-space: nowrap; /* 1 */
+}

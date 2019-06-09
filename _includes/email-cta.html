@@ -1,0 +1,140 @@
+<section class="email">
+
+    <p>Every other Tuesday morning, you&rsquo;ll get a decade of knowledge and experience packed into a 5-minute piece of thoughtful and actionable advice on accessible and inclusive practices.</p>
+
+    <!-- Begin Mailchimp Signup Form -->
+    <div id="wrapper">
+    <!--<form action="https://carloseriksson.us7.list-manage.com/subscribe/post?u=74d468d8f9729558f8696095c&amp;id=40cbc48884" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>-->
+    <form action="https://carloseriksson.us7.list-manage.com/subscribe/post?u=74d468d8f9729558f8696095c&amp;id=40cbc48884" method="get" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+
+        <div class="field-group field-group--abreasted">
+            <label for="mce-EMAIL" class="field-label visuallyhidden">Email (Required)</label>
+            <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" placeholder="E.g. jane.smith@company.com">
+            <div class="field-group">
+                <button type="submit" name="subscribe" id="mc-embedded-subscribe" class="subscribe-button">Yes, subscribe</button>
+            </div>
+        </div>
+
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true">
+            <input type="text" name="b_74d468d8f9729558f8696095c_40cbc48884" tabindex="-1" value="">
+        </div>
+
+    </form>
+    </div>
+    <!--End mc_embed_signup-->
+
+    <div id="subscribe-result"></div>
+
+    <p><em>No clickbait, ads or other distractions. If you find them useful, which
+        I think you will, I would love to have you stick around. If you
+        don&rsquo;t, I&rsquo;ll unsubscribe for you.</em></p>
+</section>
+
+<script>
+
+    var textSubcribed = "Subscribed!";
+    var textSubscribing = "<svg class='icon' width='20' height='20' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path d='M20 4.472L3.236 38h33.528L20 4.472z' stroke='#fff' stroke-width='4' fill='none' fill-rule='evenodd'/></svg><span class='visuallyhidden'>Subscribing</span>";
+    var textError = "There was a problem";
+
+    var mcSubmit = document.querySelector('.subscribe-button');
+
+    // Serialize the form data into a query string
+    // Forked and modified from https://stackoverflow.com/a/30153391/1293256
+    var serialize = function (form) {
+
+        // Setup our serialized data
+        var serialized = '';
+
+        // Loop through each field in the form
+        for (i = 0; i < form.elements.length; i++) {
+
+            var field = form.elements[i];
+
+            // Don't serialize fields without a name, submits, buttons, file and reset inputs, and disabled fields
+            if (!field.name || field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') continue;
+
+            // Convert field data to a query string
+            if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
+                serialized += '&' + encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value);
+            }
+        }
+
+        return serialized;
+
+    };
+
+    // Display the form status
+    var displayMailChimpStatus = function (data) {
+
+        // Make sure the data is in the right format
+        if (!data.result || !data.msg ) return;
+
+        // console.log(data);
+
+        // Get the status message content area
+        var mcStatus = document.querySelector('.mc-status');
+        if (!mcStatus) return;
+
+        // Update our status message
+        // mcStatus.innerHTML = data.msg;
+
+        // If error, add error class
+        if (data.result === 'error') {
+            mcSubmit.innerHTML = textError;
+            mcSubmit.classList.remove('success');
+            mcSubmit.classList.remove('busy');
+            mcSubmit.classList.add('error');
+            return;
+        }
+
+        // Otherwise, add success class
+        mcSubmit.innerHTML = textSubcribed;
+        mcSubmit.classList.remove('busy');
+        mcSubmit.classList.add('success');
+
+    };
+
+    // Submit the form
+    var submitMailChimpForm = function (form) {
+
+        // Get the Submit URL
+        var url = form.getAttribute('action');
+        url = url.replace('/post?u=', '/post-json?u=');
+        url += serialize(form) + '&c=displayMailChimpStatus';
+        // var email = document.getElementById("mce-EMAIL");
+
+        // url += '&' + encodeURIComponent("mce-EMAIL") + "=" + encodeURIComponent(email.value);
+        // url += '&c=displayMailChimpStatus';
+
+        // Create script with url and callback (if specified)
+        var script = window.document.createElement( 'script' );
+        script.src = url;
+
+        // Insert script tag into the DOM (append to <head>)
+        var ref = window.document.getElementsByTagName( 'script' )[ 0 ];
+        ref.parentNode.insertBefore( script, ref );
+
+        // After the script is loaded (and executed), remove it
+        script.onload = function () {
+            this.remove();
+        };
+
+    };
+
+    // Check all fields on submit
+    document.addEventListener('submit', function (event) {
+
+        // Prevent form from submitting
+        event.preventDefault();
+
+        mcSubmit.classList.add("busy");
+        mcSubmit.innerHTML = textSubscribing;
+
+        // Otherwise, let the form submit normally
+        // You could also bolt in an Ajax form submit process here
+        submitMailChimpForm(event.target);
+
+
+    }, false);
+</script>

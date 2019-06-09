@@ -1,0 +1,26 @@
+---
+layout: default
+---
+<div class="articles">
+
+    <h1 class="page-heading gamma">Articles</h1>
+
+    <div class="lead">
+        <p>Get articles like these before they&rsquo;re published by subscribing to the fortnightly advice.</p>
+    </div>
+
+    <ul class="post-list">
+        {% for post in site.posts %}
+        <li>
+            <article>
+                <h2 class="delta"><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                </h2>
+                <p>{{ post.summary }}</p>
+            </article>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% include email-cta.html %}
+
+</div>

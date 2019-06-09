@@ -1,0 +1,37 @@
+<!doctype html>
+<html class="" lang="en">
+
+{% include head.html %}
+
+<body>
+
+<div class="wrapper">
+
+    <!--<h1 class="delta">Superdupercritical</h1>-->
+
+    <aside class="secondary">
+    <!--<h2 class="delta">Table of contents</h2>-->
+    <nav>
+        <a href="/">
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M30 40L20 20 10 40H0L20 0l20 40H30z" fill="#00F" fill-rule="evenodd"/></svg>
+            <span class="visuallyhidden">Home</span>
+        </a>
+        <a href="/articles">Articles</a>
+        <a href="/newsletter">Newsletter</a>
+    </nav>
+    </aside>
+    <main class="primary main" role="main">
+
+        {{ content }}
+
+    </main>
+
+</div>
+
+    <!--{% include header.html %}-->
+
+    <!--{% include footer.html %}-->
+
+</body>
+
+</html>

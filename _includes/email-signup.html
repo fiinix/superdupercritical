@@ -1,13 +1,13 @@
-<section class="email">
+<section class="">
 
     <!-- Begin Mailchimp Signup Form -->
     <form action="https://carloseriksson.us7.list-manage.com/subscribe/post?u=74d468d8f9729558f8696095c&amp;id=40cbc48884" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
 
         <div class="field-group field-group--abreasted">
             <label for="mce-EMAIL" class="field-label visuallyhidden">Email (Required)</label>
-            <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" placeholder="E.g. jane.smith@company.com">
+            <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" placeholder="E.g. alex.smith@company.com">
             <div class="field-group">
-                <button type="submit" name="subscribe" id="mc-embedded-subscribe">Yes, subscribe</button>
+                <button type="submit" name="subscribe" id="mc-embedded-subscribe" class="subscribe-button">Yes, subscribe</button>
             </div>
         </div>
 
@@ -29,125 +29,108 @@
 
 <script>
 
-    /*!
- * Serialize all form data into a query string
- * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
- * @param  {Node}   form The form to serialize
- * @return {String}      The serialized form data
- */
+    var textSubcribed = "Subscribed!";
+    var textSubscribing = "<svg class='icon' width='20' height='20' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path d='M20 4.472L3.236 38h33.528L20 4.472z' stroke='#fff' stroke-width='4' fill='none' fill-rule='evenodd'/></svg><span class='visuallyhidden'>Subscribing</span>";
+    var textError = "There was a problem";
+
+    var mcSubmit = document.querySelector('.subscribe-button');
+
+    // Serialize the form data into a query string
+    // Forked and modified from https://stackoverflow.com/a/30153391/1293256
     var serialize = function (form) {
 
         // Setup our serialized data
-        var serialized = [];
+        var serialized = '';
 
         // Loop through each field in the form
-        for (var i = 0; i < form.elements.length; i++) {
+        for (i = 0; i < form.elements.length; i++) {
 
             var field = form.elements[i];
 
             // Don't serialize fields without a name, submits, buttons, file and reset inputs, and disabled fields
             if (!field.name || field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') continue;
 
-            // If a multi-select, get all selections
-            if (field.type === 'select-multiple') {
-                for (var n = 0; n < field.options.length; n++) {
-                    if (!field.options[n].selected) continue;
-                    serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.options[n].value));
-                }
-            }
-
             // Convert field data to a query string
-            else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
-                serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value));
+            if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
+                serialized += '&' + encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value);
             }
         }
 
-        return serialized.join('&');
+        return serialized;
 
     };
 
-    /* Map $ to querySelector */
-    function $(target) {
-        return document.querySelector(target);
-    }
+    // Display the form status
+    var displayMailChimpStatus = function (data) {
 
-    /* ready() */
-    document.addEventListener("DOMContentLoaded", function (event) {
-        var $form = $('#mc-embedded-subscribe-form');
-        var $submit = $('#mc-embedded-subscribe');
+        // Make sure the data is in the right format
+        if (!data.result || !data.msg ) return;
 
-        if ($form.length > 0) {
+        // console.log(data);
 
-            console.log({$form});
-            console.log({$submit});
+        // Get the status message content area
+        var mcStatus = document.querySelector('.mc-status');
+        if (!mcStatus) return;
 
-            $submit.addEventListener("click", function (e) {
-                e.preventDefault();
-                register($form)
+        // Update our status message
+        // mcStatus.innerHTML = data.msg;
 
-            }, false);
-
+        // If error, add error class
+        if (data.result === 'error') {
+            mcSubmit.innerHTML = textError;
+            mcSubmit.classList.remove('success');
+            mcSubmit.classList.remove('busy');
+            mcSubmit.classList.add('error');
+            return;
         }
-    });
-    /* End of ready() */
 
-    function register($form) {
+        // Otherwise, add success class
+        mcSubmit.innerHTML = textSubcribed;
+        mcSubmit.classList.remove('busy');
+        mcSubmit.classList.add('success');
 
-        $submit.textContent = "Sending...";
-
-
-
-        var request = new XMLHttpRequest();
-        request.open('GET', 'https://carloseriksson.us7.list-manage.com/subscribe/post-json?u=74d468d8f9729558f8696095c&amp;id=40cbc48884', true);
-
-        request.onload = function() {
-            if (request.status >= 200 && request.status < 400) {
-                // Success!
-                var data = JSON.parse(request.responseText);
-
-                console.log(data);
-
-            } else {
-                console.log({request});
-                // We reached our target server, but it returned an error
-
-            }
-        };
-
-        request.onerror = function() {
-            // There was a connection error of some sort
-            console.log({request});
-        };
-
-        request.send();
-
-
-
-        $.ajax({
-            type: $form.getAttribute('method'),
-            url: $form.getAttribute('action'),
-            data: serialize($form),
-            cache: false,
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            error: function (err) { alert('Could not connect to the registration server. Please try again later.') },
-            success: function (data) {
-                $('#mc-embedded-subscribe').val('subscribe')
-                if (data.result === 'success') {
-                    // Yeahhhh Success
-                    console.log(data.msg)
-                    $('#mce-EMAIL').css('borderColor', '#ffffff')
-                    $('#subscribe-result').css('color', 'rgb(53, 114, 210)')
-                    $('#subscribe-result').innerHTML('<p>Thank you for subscribing. We have sent you a confirmation email.</p>')
-                    $('#mce-EMAIL').textContent = "";
-                } else {
-                    // Something went wrong, do something to notify the user.
-                    console.log(data.msg)
-                    $('#mce-EMAIL').css('borderColor', '#ff8282')
-                    $('#subscribe-result').css('color', '#ff8282')
-                    $('#subscribe-result').innerHTML('<p>' + data.msg.substring(4) + '</p>')
-                }
-            }
-        })
     };
+
+    // Submit the form
+    var submitMailChimpForm = function (form) {
+
+        // Get the Submit URL
+        var url = form.getAttribute('action');
+        url = url.replace('/post?u=', '/post-json?u=');
+        url += serialize(form) + '&c=displayMailChimpStatus';
+        // var email = document.getElementById("mce-EMAIL");
+
+        // url += '&' + encodeURIComponent("mce-EMAIL") + "=" + encodeURIComponent(email.value);
+        // url += '&c=displayMailChimpStatus';
+
+        // Create script with url and callback (if specified)
+        var script = window.document.createElement( 'script' );
+        script.src = url;
+
+        // Insert script tag into the DOM (append to <head>)
+        var ref = window.document.getElementsByTagName( 'script' )[ 0 ];
+        ref.parentNode.insertBefore( script, ref );
+
+        // After the script is loaded (and executed), remove it
+        script.onload = function () {
+            this.remove();
+        };
+
+    };
+
+    // Check all fields on submit
+    document.addEventListener('submit', function (event) {
+
+        // Prevent form from submitting
+        event.preventDefault();
+
+        mcSubmit.classList.add("busy");
+        mcSubmit.innerHTML = textSubscribing;
+
+        // Otherwise, let the form submit normally
+        // You could also bolt in an Ajax form submit process here
+        submitMailChimpForm(event.target);
+
+
+    }, false);
 </script>

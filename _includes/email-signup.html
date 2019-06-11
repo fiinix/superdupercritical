@@ -11,12 +11,6 @@
             </div>
         </div>
 
-
-        <div id="mce-responses" class="clear">
-            <div class="response" id="mce-error-response" style="display:none"></div>
-            <div class="response" id="mce-success-response" style="display:none"></div>
-        </div>
-
         <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
         <div style="position: absolute; left: -5000px;" aria-hidden="true">
             <input type="text" name="b_74d468d8f9729558f8696095c_40cbc48884" tabindex="-1" value="">
@@ -32,6 +26,7 @@
     var textSubcribed = "Subscribed!";
     var textSubscribing = "<svg class='icon' width='20' height='20' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'><path d='M20 4.472L3.236 38h33.528L20 4.472z' stroke='#fff' stroke-width='4' fill='none' fill-rule='evenodd'/></svg><span class='visuallyhidden'>Subscribing</span>";
     var textError = "There was a problem";
+    var textAlready = "You&rsquo;re already subscribed";
 
     var mcSubmit = document.querySelector('.subscribe-button');
 
@@ -66,16 +61,17 @@
         // Make sure the data is in the right format
         if (!data.result || !data.msg ) return;
 
-        // console.log(data);
-
-        // Get the status message content area
-        var mcStatus = document.querySelector('.mc-status');
-        if (!mcStatus) return;
-
-        // Update our status message
-        // mcStatus.innerHTML = data.msg;
+        var already = data.msg.indexOf("already");
 
         // If error, add error class
+        if (data.result === 'error' && already) {
+            mcSubmit.innerHTML = textAlready;
+            mcSubmit.classList.remove('success');
+            mcSubmit.classList.remove('busy');
+            mcSubmit.classList.add('error');
+            return;
+        }
+
         if (data.result === 'error') {
             mcSubmit.innerHTML = textError;
             mcSubmit.classList.remove('success');

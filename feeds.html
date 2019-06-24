@@ -1,0 +1,20 @@
+---
+layout: default
+---
+<div class="home">
+
+    <h1 class="page-heading gamma">Real simple syndicated feeds</h1>
+
+    <div class="lead">
+        <p>Time-shifted content which is available for your convenience, time and attention, on your terms.</p>
+    </div>
+
+
+    <h2 class="delta">Articles-only feed</h2>
+
+    <p>A fortnightly feed which only contains the longer, feature articles.</p>
+    <p><a href="/feeds/articles.xml">{{ "/feeds/articles" | prepend: site.baseurl | prepend: site.url }}</a></p>
+
+    {% include email-cta.html %}
+
+</div>

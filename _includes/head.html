@@ -15,6 +15,8 @@
 
 	{% if page.preview %}
 	<meta property="og:image" content="{{ "/assets/images/" | prepend: site.baseurl | prepend: site.url }}{{ page.preview }}"/>
+	<meta property="og:title" content="{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}"/>
+	<meta name="twitter:card" content="summary_large_image"/>
 	{% endif %}
 
 </head>

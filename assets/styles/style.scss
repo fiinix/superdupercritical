@@ -77,6 +77,66 @@ $heading-weight:			700;
 
 
 
+/*------------------------------------*\
+    #Take a svg and make it embeddable in the css (without Base64)
+\*------------------------------------*/
+
+// Helper function
+// Return null rather than throwing an error if index is outside list range.
+@function nth-or-null($list, $index) {
+	@return if(length($list) >= $index, nth($list, $index), null);
+}
+
+//
+//  Function to replace characters in a string
+//
+@function str-replace($string, $search, $replace: '') {
+	$index: str-index($string, $search);
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace +
+        str-replace(str-slice($string, $index +
+        str-length($search)), $search, $replace);
+	}
+	@return $string;
+}
+
+//
+//  Function to create an optimized svg url
+//  (may need a few extra replacements)
+//
+@function old_svg-url($svg) {
+	$svg: str-replace($svg, '"', '\'');
+	$svg: str-replace($svg, '<', '%3C');
+	$svg: str-replace($svg, '>', '%3E');
+	$svg: str-replace($svg, '&', '%26');
+	$svg: str-replace($svg, '#', '%23');
+	@return url("data:image/svg+xml;charset=utf8,#{$svg}");
+}
+
+@function svg-url($svg) {
+	//
+	// Chunk up string in order to avoid
+	// "SystemStackError: stack level too deep"
+	//
+	$encoded: '';
+	$slice: 2000;
+	$index: 0;
+	$loops: ceil(str-length($svg)/$slice);
+	@for $i from 1 through $loops {
+		$chunk: str-slice($svg, $index, $index + $slice - 1);
+		$chunk: str-replace($chunk, '"', '\'');
+		$chunk: str-replace($chunk, '<', '%3C');
+		$chunk: str-replace($chunk, '>', '%3E');
+		$chunk: str-replace($chunk, '&', '%26');
+		$chunk: str-replace($chunk, '#', '%23');
+		$encoded: #{$encoded}#{$chunk};
+		$index: $index + $slice;
+	}
+	@return url("data:image/svg+xml;charset=utf8,#{$encoded}");
+}
+
+
+
 @mixin mq($point, $IE9: false, $query1: min, $query2: width) {
 	@if $IE9 == true{
 		.lt-ie9 & {
@@ -137,7 +197,7 @@ $heading-weight:			700;
 }
 
 * + * {
-	margin-top: var(--s1);
+	margin-top: var(--s0);
 }
 
 * + h1,
@@ -187,7 +247,8 @@ html.has-canon:after {
 	background-size: 11.1111vw 11.1111vh, 11.1111vw 11.1111vh;
 }
 
-body {
+body,
+blockquote cite {
 	font-size: calc(16px + (20 - 16) * ((100vw - 320px) / (1200 - 320)));
 	line-height: 1.4;
 	font-family: Georgia, Times, "Times New Roman", serif;
@@ -196,13 +257,65 @@ body {
 }
 
 .lead, blockquote {
+	//font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
+	//line-height: 1.2;
+}
+
+.lead {
+	font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
+	line-height: 1.2;
+	margin-bottom: var(--s3);
+}
+
+blockquote {
+	margin-top: var(--s3);
+	margin-bottom: var(--s3);
+	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 500;
 	font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1200 - 320)));
 	line-height: 1.2;
 }
 
-.lead {
-	margin-bottom: var(--s3);
+blockquote p {
+	position: relative;
+
+	// To allow the linear gradient to wrap each line
+	display: inline;
+	background: linear-gradient(to bottom, var(--main-color-rose-quartz) 90%, white 90%);
+	//box-shadow: 0.25rem 0 0 var(--main-color-rose-quartz), -0.25rem 0 0 var(--main-color-rose-quartz);
+
 }
+blockquote p cite {
+	font-style: normal;
+	-webkit-text-fill-color: var(--text-color);
+}
+cite:before {
+	content: "\2014";
+}
+
+blockquote p:before, blockquote p:after {
+	//content: " ";
+	//display: block;
+	//position: absolute;
+}
+
+blockquote p:before {
+	//background-image: svg-url("<svg width='52' height='32' xmlns='http://www.w3.org/2000/svg'><g fill='#00F' fill-rule='evenodd'><path d='M0 32L16 0l4 8-4 8 8 16H0zM28 32L44 0l4 8-4 8 8 16H28z'/></g></svg>");
+	//background-size: em(52) em(32);
+	//width: em(52);
+	//height: em(32);
+	//top: em(- 32);
+	//left: em(- 52);
+}
+
+//blockquote:nth-of-type(even) p:before {
+//	background-image: svg-url("<svg width='52' height='32' xmlns='http://www.w3.org/2000/svg'><g fill='#00F' fill-rule='evenodd'><path d='M52 0L36 32l-4-8 4-8-8-16h24zM24 0L8 32l-4-8 4-8L0 0h24z'/></g></svg>");
+//	top: 0;
+//	left: 0;
+//	right: em(- 52);
+//	bottom: em(- 32);
+//}
+//blockquote:nth-of-type(2) p:after {}
 
 h1, .alpha {
 	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -402,16 +515,39 @@ picture {
 }
 
 figure {
-	margin: 0;
-	width: 100%;
+	width: auto;
+	margin-top: var(--s3);
+	margin-bottom: var(--s3);
+	//margin-right: -22.22vw;
+	margin-left: -5.55vw;
+	margin-right: -11.11vw;
+
+	svg, img {
+		width: 100%;
+	}
+
+	img {
+		vertical-align: middle;
+	}
+
+	@include mq(641) {
+		margin-left: 0;
+	}
 }
 
 figcaption {
 	position: relative;
-	margin-left: auto;
-	margin-right: auto;
-	max-width: 75vw;
+	margin-left: 5.55vw;
+	margin-right: 11.11vw;
 	font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (1200 - 320)));
+
+	@include mq(641) {
+
+		margin-left: 0;
+		margin-right: auto;
+		max-width: 49.99vw;
+
+	}
 }
 
 
@@ -553,15 +689,4 @@ button {
 	position: absolute;
 	width: 1px;
 	white-space: nowrap; /* 1 */
-}
-
-figure {
-	width: auto;
-	margin-top: 4.5em;
-	margin-bottom: 4.5em;
-	margin-right: -22.22vw;
-
-	svg {
-		width: 100%;
-	}
 }

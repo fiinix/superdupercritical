@@ -6,11 +6,13 @@ layout: default
     <header class="article__header">
 
         <h1 class="article__title gamma" itemprop="name headline">{{ page.title
-            }}</h1>
+            | markdownify | strip_html | trim }}</h1>
 
         <div class="lead">
             {{ page.summary | markdownify | strip_html | trim }}
         </div>
+
+        <dl class="entry__meta"></dl>
 
     </header>
 

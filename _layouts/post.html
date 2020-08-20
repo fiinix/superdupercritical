@@ -12,6 +12,8 @@ layout: default
             {{ page.summary | markdownify | strip_html | trim }}
         </div>
 
+        <p>Published on: {{ page.date | date: "%B %Y" }}</p>
+
         <dl class="entry__meta"></dl>
 
     </header>

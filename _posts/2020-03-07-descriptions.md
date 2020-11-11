@@ -76,9 +76,9 @@ We keep it to around 150 characters (not words) so that AT, such as JAWS, can re
 
 The answer is often, no.
 
-There are exceptions of course, moments when we don’t have to write a text description. When doing so would in fact do more harm than good. These are called decorative images and Web Accessibility Initiative (WAI) has a great [Decision Tree to help determine if an image doesn’t add information to the content of a page](tree), and therefore doesn’t need a text description.
+There are exceptions of course, moments when we don’t have to write a text description. When doing so would in fact do more harm than good. These are called decorative images and Web Accessibility Initiative (WAI) has a great [Decision Tree to help determine if an image doesn’t add information to the content of a page][tree], and therefore doesn’t need a text description.
 
-Use [Image Alt Tag Checker](alt-checker) to scan your current website for missing text descriptions.
+Use [Image Alt Tag Checker][alt-checker] to scan your current website for missing text descriptions.
 
 The results from our user testing with Susan and the Kent Association for the Blind taught us that nothing compares to testing and working with people with real disabilities.
 
